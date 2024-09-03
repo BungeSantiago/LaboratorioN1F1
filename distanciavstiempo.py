@@ -10,7 +10,7 @@ from scipy.optimize import curve_fit
 
 # cada 300 milisegundos
 
-# Preguntar si hay que pasar las unidades a cm
+# Saco el promedio de las aceleraciones de cada test
 
 def csv_to_dict(file_path:str) -> dict:
     '''
@@ -49,7 +49,7 @@ def correct_units(time:np.array, distance:np.array) -> tuple:
     return time, distance
 
 data = csv_to_dict('dataset/prueba1.csv')
-tiempo, posicion = data['test 1']['milisegundos'], data['test 1']['mediciones']
+tiempo, posicion = data['test 3']['milisegundos'], data['test 3']['mediciones']
 tiempo, posicion = correct_units(tiempo, posicion)
 
 # Datos de ejemplo (tiempo, posición y errores en y)
