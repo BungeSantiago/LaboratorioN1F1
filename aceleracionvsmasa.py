@@ -51,8 +51,3 @@ def correct_units(time:np.array, distance:np.array) -> tuple:
 data = csv_to_dict('dataset/prueba1.csv')
 tiempo, posicion = data['test 1']['milisegundos'], data['test 1']['mediciones']
 tiempo, posicion = correct_units(tiempo, posicion)
-
-# aceleracion vs las distintas m chicas y con M fija
-
-# eje x masa chica
-# eje y pones la aceleracion
