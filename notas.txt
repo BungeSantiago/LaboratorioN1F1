@@ -1,0 +1,73 @@
+DATOS:
+distancia inicial = 6cm
+peso trineo = 110 gramos
+peso masa dorada = 73 gramos
+peso masa plateada = 22 gramos
+peso masa madera = 6 gramos
+peso botella de agua = 148 gramos
+
+--- SUPERFICIE PAPEL ---
+
+PRUEBA 1:
+superficie ----> papel
+friccion -> trineo con papel
+m = 2 plateadas 1 dorada y 1 madera y el carrito
+M = masa dorada
+
+cada 300 milisegundos
+
+PRUEBA 2:
+superficie ----> papel
+friccion -> trineo con papel
+m = solo carrito
+M = 2 masas de plata
+
+cada 200 milisegundos
+
+PRUEBA 3:
+superficie ----> papel
+friccion -> trineo con papel
+m = masa de madera y carrito
+M = 2 masas de plata
+
+cada 200 milisegundos
+
+PRUEBA 4 (PARA REEMPLAZAR PRUEBA 1)
+superficie ----> papel
+friccion -> trineo con papel
+m = masa madera y 1 masa plata y el carrito
+M = 2 masas de plata
+
+cada 300 milisegundos
+
+--- SUPERFICIE MESA (madera) ---
+
+PRUEBA 5:
+superficie ----> madera
+friccion -> trineo con madera
+m = botella de agua y carrito
+M = masa dorada
+
+cada 300 milisegundos
+
+PRUEBA 6:
+superficie ----> madera
+friccion -> trineo con madera
+m = botella de agua 1 de plata y carrito
+M = masa dorada
+
+cada 300 milisegundos
+
+PRUEBA 7:
+superficie ----> madera
+friccion -> trineo con madera
+m = 1 dorada 1 plateada 1 madera y carrito
+M = masa dorada
+
+cada 200 milisegundos
+
+
+MIERCOLES QUE VIENE PARA AAAANTES DE LA CLASE -> PRE-ENTREGA PDF TRANQUILO INFORME CON LOS GRAFICOS Y DATOS
+GRAFICOS (GRAFICOS EN CELU)
+Y PARA EL PROOOXIMO MIERCOLES YA SI LA ENTREGA FINAL 
+VER PDF CAMPUS
