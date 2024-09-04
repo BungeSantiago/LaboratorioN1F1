@@ -5,19 +5,22 @@ import pandas as pd
 from scipy.optimize import curve_fit
 
 
-# Aceleracion con M = Masa dorada y distintas m para superficie de madera.
 trineo = 110
 masa_dorada = 73
 masa_plateada = 22
 masa_madera = 6
 agua = 148
-m1 = trineo + agua
-m2 = agua + masa_plateada + trineo
-m3 = masa_dorada +masa_plateada + masa_madera +trineo
+m2 = trineo
+m3 = masa_madera + trineo
+m4 = masa_madera + masa_plateada + trineo
+m5 = trineo + agua
+m6 = agua + masa_plateada + trineo
+m7 = masa_dorada +masa_plateada + masa_madera + trineo
+
 
 def pasar_a_array(prueba):
     df = pd.read_csv(prueba)
-    df_filtrado_t = df[df['test'] == 1]
+    df_filtrado_t = df[df['test'] == 3]
     tiempo = df_filtrado_t['milisegundos'].to_numpy()
     posicion = df_filtrado_t['mediciones'].to_numpy()
     return tiempo, posicion
@@ -40,14 +43,43 @@ def aceleracion(prueba):
 
     return a_opt, error_a
 
+# Aceleracion con M = Masa dorada y distintas m para superficie de madera.
+
 aceleraciones = np.array([aceleracion(f'dataset/prueba{i}.csv')[0] for i in range(5, 8)])
 errores_aceleracion = np.array([aceleracion(f'dataset/prueba{i}.csv')[1] for i in range(5, 8)])
-m = np.array([m1, m2, m3])
+ma1 = np.array([m5, m6, m7])
 
 plt.figure()
-plt.errorbar(m, aceleraciones, yerr=errores_aceleracion, fmt='o', color='b', capsize=5)
-plt.title('Aceleración vs m')
+plt.errorbar(ma1, aceleraciones, yerr=errores_aceleracion, fmt='o', color='b', capsize=5)
+plt.title('Aceleración vs m con M = Masa dorada')
 plt.xlabel('Masa m (g)')
 plt.ylabel('Aceleración (m/s^2)')
+plt.grid(True)
+plt.show()
+
+# Aceleracion con masas M = 2 masas de plata y distntas m para superficie de papel.
+aceleraciones2 = np.array([aceleracion(f'dataset/prueba{i}.csv')[0] for i in range(2, 5)])
+errores_aceleraciones2 = np.array([aceleracion(f'dataset/prueba{i}.csv')[1] for i in range(2, 5)])
+ma2 = np.array([m2, m3, m4])
+
+plt.figure()
+plt.errorbar(ma2, aceleraciones2, yerr=errores_aceleraciones2, fmt='o', color='b', capsize=5)
+plt.title('Aceleración vs m con M = 2 masas de plata')
+plt.xlabel('Masa m (g)')
+plt.ylabel('Aceleración (m/s^2)')
+plt.grid(True)
+plt.show()
+
+# Coeficiente de Rozamiento Dinamico para distintas superficies
+g = 9.81
+mu_d1 = (g * ((masa_dorada/1000) / (m5/1000))) - (aceleraciones[0] / g)
+mu_d2 = (g * ((masa_plateada/1000) / (m2/1000))) - (aceleraciones2[0] / g)
+superficies = ['madera', 'papel']
+
+plt.figure()
+plt.bar(superficies, [mu_d1, mu_d2], color='b')
+plt.title('Coeficiente de Rozamiento Dinamico para distintas superficies')
+plt.ylabel('Coeficiente de Rozamiento Dinamico')
+plt.xlabel('Superficie')
 plt.grid(True)
 plt.show()
