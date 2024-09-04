@@ -40,5 +40,5 @@ aproximacion = funcion_lineal(sensor, pendiente, ordenada)
 errores = sensor**2 * incerteza_pendiente**2 + incerteza_ordenada**2
 errores = errores**(1/2)
 conversion = [(x, y) for x, y in zip(aproximacion, mediciones)]
-print(conversion)
-print(errores)
+print(f'(Aproximación, Mediciones): {conversion}')
+print(f'Incertezas: {errores}')

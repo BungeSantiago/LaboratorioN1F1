@@ -1,9 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import distanciavstiempo as dvt
-import pandas as pd
 from scipy.optimize import curve_fit
 
+# Armar un diccionario con todos los pesos de todo
 
 trineo = 110
 masa_dorada = 73
@@ -17,17 +16,50 @@ m5 = trineo + agua
 m6 = agua + masa_plateada + trineo
 m7 = masa_dorada +masa_plateada + masa_madera + trineo
 
+def csv_to_dict(file_path:str) -> dict:
+    '''
+    Pasa los datos del csv a un diccionario con la siguiente estructura:
+    dict = {'test 1': {'milisegundos': [], 'mediciones': []}, 'test 2': {'milisegundos': [], 'mediciones': []} ...
+    '''
+    data = {}
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        header = lines[0].strip().split(',')
+
+        for i in range(1, 4):
+            data[f'test {i}'] = {header[1]: [], header[2]: []}
+
+        for line in lines[1:]:
+            test, time, measurement = line.strip().split(',')
+            data[f'test {test}'][header[1]].append(float(time))
+            data[f'test {test}'][header[2]].append(float(measurement))
+
+        for key in data:
+            for sub_key in data[key]:
+                data[key][sub_key] = np.array(data[key][sub_key])
+
+    return data
 
 def pasar_a_array(prueba):
-    df = pd.read_csv(prueba)
-    df_filtrado_t = df[df['test'] == 3]
-    tiempo = df_filtrado_t['milisegundos'].to_numpy()
-    posicion = df_filtrado_t['mediciones'].to_numpy()
+    data = csv_to_dict(prueba)
+    tiempo, posicion = data['test 3']['milisegundos'], data['test 3']['mediciones']
     return tiempo, posicion
+
+def correct_units(time:np.array, distance:np.array) -> tuple:
+    '''
+    Convierte las unidades de tiempo a segundos y la distancia a centímetros.
+    '''
+    a = 0.01736595797123086
+    b = -0.6682770640993427
+    
+    time = time / 1000
+    distance = a * distance + b
+
+    return time, distance
 
 def aceleracion(prueba):
     tiempo, posicion = pasar_a_array(prueba)
-    tiempo, posicion = dvt.correct_units(tiempo, posicion)
+    tiempo, posicion = correct_units(tiempo, posicion)
     errores_y = np.full(len(posicion), 0.1)
 
     # Definir la función cuadrática
@@ -72,8 +104,8 @@ plt.show()
 
 # Coeficiente de Rozamiento Dinamico para distintas superficies
 g = 9.81
-mu_d1 = (g * ((masa_dorada/1000) / (m5/1000))) - (aceleraciones[0] / g)
-mu_d2 = (g * ((masa_plateada/1000) / (m2/1000))) - (aceleraciones2[0] / g)
+mu_d1 = aceleraciones[0] / g
+mu_d2 = aceleraciones2[0] / g
 superficies = ['madera', 'papel']
 
 plt.figure()

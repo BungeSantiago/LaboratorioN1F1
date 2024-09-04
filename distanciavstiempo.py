@@ -40,8 +40,8 @@ def correct_units(time:np.array, distance:np.array) -> tuple:
     '''
     Convierte las unidades de tiempo a segundos y la distancia a centímetros.
     '''
-    a = 0.017365957941399224
-    b = -0.668277026706441
+    a = 0.01736595797123086
+    b = -0.6682770640993427
     
     time = time / 1000
     distance = a * distance + b
@@ -65,6 +65,9 @@ popt, pcov = curve_fit(modelo_cuadratico, tiempo, posicion, sigma=errores_y, abs
 a_opt, v_0_opt, x_0_opt = popt
 errores = np.sqrt(np.diag(pcov))
 
+print(f'Coeficientes ajustados: {popt}')
+print(f'Incertezas: {errores}')
+
 print(f"Aceleración a: {a_opt:.1f} ± {errores[0]:.1f} m /s^2")
 print(f"Velocidad inicial v_0: {v_0_opt:.0f} ± {errores[1]:.0f} m /s")
 print(f"Posición inicial x_0: {x_0_opt:.0f} ± {errores[2]:.0f}m")
@@ -74,6 +77,7 @@ t_ajuste = np.linspace(min(tiempo), max(tiempo), 100)
 plt.errorbar(tiempo, posicion, yerr=errores_y, fmt='o', label='Datos')
 
 plt.plot(t_ajuste, modelo_cuadratico(t_ajuste, *popt), 'r', label=f'Ajuste cuadrático')
+plt.title('Distancia vs Tiempo')
 plt.xlabel('Tiempo [s]')
 plt.ylabel('Posición [cm]')
 plt.legend()
