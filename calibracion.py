@@ -39,6 +39,9 @@ plt.show()
 aproximacion = funcion_lineal(sensor, pendiente, ordenada)
 errores = sensor**2 * incerteza_pendiente**2 + incerteza_ordenada**2
 errores = errores**(1/2)
-conversion = [(x, y) for x, y in zip(aproximacion, mediciones)]
+# Sacar esto
+for i, error in enumerate(errores):
+    errores[i] = round(error, 3)
+conversion = [(round(x, 3), y) for x, y in zip(aproximacion, mediciones)]
 print(f'(Aproximación, Mediciones): {conversion}')
 print(f'Incertezas: {errores}')
