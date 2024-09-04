@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import distanciavstiempo as dvt
+import pandas as pd
 from scipy.optimize import curve_fit
 
 
@@ -23,6 +24,7 @@ def pasar_a_array(prueba):
 
 def aceleracion(prueba):
     tiempo, posicion = pasar_a_array(prueba)
+    tiempo, posicion = dvt.correct_units(tiempo, posicion)
     errores_y = np.full(len(posicion), 0.1)
 
     # Definir la función cuadrática
