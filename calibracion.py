@@ -29,7 +29,6 @@ plt.plot(values, y, label = 'Recta')
 # Etiquetas y leyenda
 plt.xlabel('Unidades de distancia del sensor')
 plt.ylabel('Distancia real (cm)')
-plt.title('Gráfico de Calibración')
 plt.legend()
 
 # Mostrar el gráfico

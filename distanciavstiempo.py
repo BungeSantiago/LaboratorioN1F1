@@ -77,7 +77,6 @@ t_ajuste = np.linspace(min(tiempo), max(tiempo), 100)
 plt.errorbar(tiempo, posicion, yerr=errores_y, fmt='o', label='Datos')
 
 plt.plot(t_ajuste, modelo_cuadratico(t_ajuste, *popt), 'r', label=f'Ajuste cuadrático')
-plt.title('Distancia vs Tiempo')
 plt.xlabel('Tiempo [s]')
 plt.ylabel('Posición [cm]')
 plt.legend()
