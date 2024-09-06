@@ -4,17 +4,18 @@ from scipy.optimize import curve_fit
 
 # Armar un diccionario con todos los pesos de todo
 
-trineo = 110
-masa_dorada = 73
-masa_plateada = 22
-masa_madera = 6
-agua = 148
-m2 = trineo
-m3 = masa_madera + trineo
-m4 = masa_madera + masa_plateada + trineo
-m5 = trineo + agua
-m6 = agua + masa_plateada + trineo
-m7 = masa_dorada +masa_plateada + masa_madera + trineo
+def masas_dict(file_path:str) -> dict:
+    '''
+    Pasa los datos del csv a un diccionario con la siguiente estructura:
+    dict = {'trineo': 110, 'dorada': 73, ...}
+    '''
+    data = {}
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        for line in lines[1:]:
+            masa, peso = line.strip().split(',')
+            data[masa] = float(peso)
+    return data
 
 def csv_to_dict(file_path:str) -> dict:
     '''
@@ -74,6 +75,15 @@ def aceleracion(prueba):
     error_a = np.sqrt(pcov[0, 0])  # Error asociado a la aceleración
 
     return a_opt, error_a
+
+pesos = masas_dict('dataset/datos.txt')
+
+m2 = pesos['trineo']
+m3 = pesos['madera'] + pesos['trineo']
+m4 = pesos['madera'] + pesos['plateada'] + pesos['trineo']
+m5 = pesos['trineo'] + pesos['agua']
+m6 = pesos['agua'] + pesos['plateada'] + pesos['trineo']
+m7 = pesos['dorada'] + pesos['plateada'] + pesos['madera'] + pesos['trineo']
 
 # Aceleracion con M = Masa dorada y distintas m para superficie de madera.
 

@@ -1,6 +1,6 @@
-PESOS:
-peso trineo = 110 gramos
-peso masa dorada = 73 gramos
-peso masa plateada = 22 gramos
-peso masa madera = 6 gramos
-peso botella de agua = 148 gramos
+masa,peso
+trineo,110
+dorada,73
+plateada,22
+madera,6
+agua,148
