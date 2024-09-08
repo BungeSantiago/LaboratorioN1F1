@@ -8,11 +8,11 @@ funcion_lineal = lambda x, a, b: a*x + b
 # Mediciones
 sensor = np.array([253, 309, 365, 719, 896, 1024, 1247, 1487, 1705]) # Eje x
 mediciones = np.array([4, 5, 6, 10, 14, 18, 22, 26, 28]) # Eje y
-incertezas_sensor = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1]) # Incertezas del sensor
-incertezas_mediciones = np.array([0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]) # Incertezas de la regla
+incertezas_sensor = 1 # Incertezas del sensor
+incertezas_mediciones = 0.1 # Incertezas de la regla
 
 # Ajuste lineal
-params, covariance = curve_fit(funcion_lineal, sensor, mediciones, sigma=incertezas_sensor, absolute_sigma=True)
+params, covariance = curve_fit(f = funcion_lineal, xdata = sensor, ydata = mediciones, sigma = incertezas_sensor, absolute_sigma = True)
 pendiente, ordenada = params
 incerteza_pendiente, incerteza_ordenada = np.sqrt(np.diag(covariance))
 print(f'Pendiente: {pendiente} ± {incerteza_pendiente}')
