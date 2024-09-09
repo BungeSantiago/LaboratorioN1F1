@@ -10,8 +10,6 @@ from scipy.optimize import curve_fit
 
 # cada 300 milisegundos
 
-# Saco el promedio de las aceleraciones de cada test
-
 def csv_to_dict(file_path:str) -> dict:
     '''
     Pasa los datos del csv a un diccionario con la siguiente estructura:
@@ -48,12 +46,12 @@ def correct_units(time:np.array, distance:np.array) -> tuple:
 
     return time, distance
 
-data = csv_to_dict('dataset/prueba1.csv')
-tiempo, posicion = data['test 3']['milisegundos'], data['test 3']['mediciones']
+data = csv_to_dict('dataset/prueba4.csv')
+tiempo, posicion = data['test 1']['milisegundos'], data['test 1']['mediciones']
 tiempo, posicion = correct_units(tiempo, posicion)
 
 # Datos de ejemplo (tiempo, posición y errores en y)
-errores_y = np.full(len(posicion), 0.1)
+errores_y = np.full(len(posicion), 0.1) # O tengo que usar las incertezas de la pendiente?
 
 # Definir la función cuadrática con v_0 = 0
 modelo_cuadratico = lambda t, a, v_0, x_0: a * t**2 + v_0 * t +  x_0 
@@ -68,9 +66,9 @@ errores = np.sqrt(np.diag(pcov))
 print(f'Coeficientes ajustados: {popt}')
 print(f'Incertezas: {errores}')
 
-print(f"Aceleración a: {a_opt:.1f} ± {errores[0]:.1f} m /s^2")
-print(f"Velocidad inicial v_0: {v_0_opt:.0f} ± {errores[1]:.0f} m /s")
-print(f"Posición inicial x_0: {x_0_opt:.0f} ± {errores[2]:.0f}m")
+print(f"Aceleración a: {2*a_opt:.1f} ± {errores[0]:.1f} cm /s^2")
+print(f"Velocidad inicial v_0: {v_0_opt:.0f} ± {errores[1]:.0f} cm /s")
+print(f"Posición inicial x_0: {x_0_opt:.0f} ± {errores[2]:.0f} cm")
 
 # Graficar los datos y el ajuste
 t_ajuste = np.linspace(min(tiempo), max(tiempo), 100)
@@ -81,3 +79,5 @@ plt.xlabel('Tiempo [s]')
 plt.ylabel('Posición [cm]')
 plt.legend()
 plt.show()
+
+# Saco el promedio de las aceleraciones de cada test
