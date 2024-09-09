@@ -18,6 +18,17 @@ incerteza_pendiente, incerteza_ordenada = np.sqrt(np.diag(covariance))
 print(f'Pendiente: {pendiente} ± {incerteza_pendiente}')
 print(f'Ordenada al origen: {ordenada} ± {incerteza_ordenada}')
 
+# Ejemplo de conversión
+aproximacion = funcion_lineal(sensor, pendiente, ordenada)
+errores = lambda x : (pendiente**2 * incertezas_sensor**2) + (x**2 * incerteza_pendiente**2) + (incerteza_ordenada**2) + (2*x*covariance[0, 1]) # -> Esto es el error al cuadrado
+errores = np.sqrt(errores(sensor))
+lista_errores = [(round(error, 3)) for error in errores]
+
+conversion = [(round(x, 3), y) for x, y in zip(aproximacion, mediciones)]
+print(f'(Aproximación, Mediciones): {conversion}')
+print(f'Incertezas: {lista_errores}')
+# PREGUNTAR SI DEBERIAMOS GRAFICAR ESTOS ERRORES
+
 # Grafico los datos con sus incertezas
 plt.errorbar(sensor, mediciones, yerr=incertezas_mediciones, xerr=incertezas_sensor, fmt='ro', label='Datos con incertezas')
 
@@ -33,14 +44,3 @@ plt.legend()
 
 # Mostrar el gráfico
 plt.show()
-
-# Ejemplo de conversión
-aproximacion = funcion_lineal(sensor, pendiente, ordenada)
-errores = sensor**2 * incerteza_pendiente**2 + incerteza_ordenada**2
-errores = errores**(1/2)
-# Sacar esto
-for i, error in enumerate(errores):
-    errores[i] = round(error, 3)
-conversion = [(round(x, 3), y) for x, y in zip(aproximacion, mediciones)]
-print(f'(Aproximación, Mediciones): {conversion}')
-print(f'Incertezas: {errores}')
