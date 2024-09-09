@@ -41,11 +41,6 @@ def csv_to_dict(file_path:str) -> dict:
 
     return data
 
-def pasar_a_array(prueba):
-    data = csv_to_dict(prueba)
-    tiempo, posicion = data['test 3']['milisegundos'], data['test 3']['mediciones']
-    return tiempo, posicion
-
 def correct_units(time:np.array, distance:np.array) -> tuple:
     '''
     Convierte las unidades de tiempo a segundos y la distancia a centímetros.
@@ -58,23 +53,30 @@ def correct_units(time:np.array, distance:np.array) -> tuple:
 
     return time, distance
 
-def aceleracion(prueba):
-    tiempo, posicion = pasar_a_array(prueba)
-    tiempo, posicion = correct_units(tiempo, posicion)
-    errores_y = np.full(len(posicion), 0.1)
+def promedio_aceleracion(prueba):
+    '''
+    Calcula la aceleración de una prueba promediando los valores de los 3 tests.
+    '''
+    data = csv_to_dict(prueba)
+    modelo_cuadratico = lambda t, a, v_0, x_0: a * t**2 + v_0 * t +  x_0
+    aceleraciones = []
+    errores_aceleracion = []
 
-    # Definir la función cuadrática
-    def modelo_cuadratico(t, a, v_0, x_0):      
-        return 0.5 * a * t**2 + v_0 * t + x_0
+    for test in data:
+        tiempo, posicion = data[test]['milisegundos'], data[test]['mediciones']
+        tiempo, posicion = correct_units(tiempo, posicion)
+        errores_y = np.full(len(posicion), 0.1)
+        popt, pcov = curve_fit(modelo_cuadratico, tiempo, posicion, sigma=errores_y, absolute_sigma=True)
+        a_opt = 2*popt[0]
+        error_a = np.sqrt(pcov[0, 0])
+        aceleraciones.append(a_opt)
+        errores_aceleracion.append(error_a)
 
-    # Ajustar la curva
-    popt, pcov = curve_fit(modelo_cuadratico, tiempo, posicion, sigma=errores_y, absolute_sigma=True)
+    return np.mean(aceleraciones), np.mean(errores_aceleracion)
 
-    # Obtener los coeficientes ajustados y sus errores
-    a_opt = popt[0]  # La aceleración óptima es el primer parámetro
-    error_a = np.sqrt(pcov[0, 0])  # Error asociado a la aceleración
-
-    return a_opt, error_a
+def mu_dinamico(m, M, a):
+    g = 9.81
+    return ((m + M) * a + M*g) / (m * g)
 
 pesos = masas_dict('dataset/datos.txt')
 
@@ -85,38 +87,65 @@ m5 = pesos['trineo'] + pesos['agua']
 m6 = pesos['agua'] + pesos['plateada'] + pesos['trineo']
 m7 = pesos['dorada'] + pesos['plateada'] + pesos['madera'] + pesos['trineo']
 
-# Aceleracion con M = Masa dorada y distintas m para superficie de madera.
+# Aceleracion con M = DORADA y distintas m para superficie de madera.
 
-aceleraciones = np.array([aceleracion(f'dataset/prueba{i}.csv')[0] for i in range(5, 8)])
-errores_aceleracion = np.array([aceleracion(f'dataset/prueba{i}.csv')[1] for i in range(5, 8)])
-ma1 = np.array([m5, m6, m7])
+aceleraciones_madera = {}
+pesos_madera = [m5, m6, m7]
 
-plt.figure()
-plt.errorbar(ma1, aceleraciones, yerr=errores_aceleracion, fmt='o', color='b', capsize=5)
+for i, j in enumerate(range(5, 8)):
+    data = csv_to_dict(f'dataset/prueba{j}.csv')
+    aceleracion, error_aceleracion = promedio_aceleracion(f'dataset/prueba{j}.csv')
+    aceleraciones_madera[pesos_madera[i]] = [aceleracion, error_aceleracion]
+
+# Grafico de aceleracion vs m con M = DORADA
+plt.errorbar(aceleraciones_madera.keys(), 
+             [aceleraciones_madera[key][0] for key in aceleraciones_madera], 
+             yerr=[aceleraciones_madera[key][1] for key in aceleraciones_madera], 
+             fmt='o', color='b', capsize=5)
 plt.title('Aceleración vs m con M = Masa dorada')
 plt.xlabel('Masa m (g)')
-plt.ylabel('Aceleración (m/s^2)')
+plt.ylabel('Aceleración (cm/s^2)')
 plt.grid(True)
 plt.show()
 
-# Aceleracion con masas M = 2 masas de plata y distntas m para superficie de papel.
-aceleraciones2 = np.array([aceleracion(f'dataset/prueba{i}.csv')[0] for i in range(2, 5)])
-errores_aceleraciones2 = np.array([aceleracion(f'dataset/prueba{i}.csv')[1] for i in range(2, 5)])
-ma2 = np.array([m2, m3, m4])
+# Aceleracion con masas M = PLATA x2 y distntas m para superficie de papel.
+aceleraciones_papel = {}
+pesos_papel = [m2, m3, m4]
 
-plt.figure()
-plt.errorbar(ma2, aceleraciones2, yerr=errores_aceleraciones2, fmt='o', color='b', capsize=5)
+for i, j in enumerate(range(2, 5)):
+    data = csv_to_dict(f'dataset/prueba{j}.csv')
+    aceleracion, error_aceleracion = promedio_aceleracion(f'dataset/prueba{j}.csv')
+    aceleraciones_papel[pesos_papel[i]] = [aceleracion, error_aceleracion]
+
+# Grafico de aceleracion vs m con M = PLATA x2
+plt.errorbar(aceleraciones_papel.keys(),
+                [aceleraciones_papel[key][0] for key in aceleraciones_papel],
+                yerr=[aceleraciones_papel[key][1] for key in aceleraciones_papel],
+                fmt='o', color='b', capsize=5)
 plt.title('Aceleración vs m con M = 2 masas de plata')
 plt.xlabel('Masa m (g)')
-plt.ylabel('Aceleración (m/s^2)')
+plt.ylabel('Aceleración (cm/s^2)')
 plt.grid(True)
 plt.show()
 
 # Coeficiente de Rozamiento Dinamico para distintas superficies
 g = 9.81
-mu_d1 = aceleraciones[0] / g
-mu_d2 = aceleraciones2[0] / g
-superficies = ['madera', 'papel']
+mu_pruebas_madera = []
+mu_pruebas_papel = []
+superficies = ['Madera', 'Papel']
+
+for i in range(3):
+    mu = mu_dinamico(pesos_madera[i], pesos['dorada'], aceleraciones_madera[pesos_madera[i]][0])
+    mu_pruebas_madera.append(mu)
+
+for i in range(3):
+    mu = mu_dinamico(pesos_papel[i], 2 * pesos['plateada'], aceleraciones_papel[pesos_papel[i]][0])
+    mu_pruebas_papel.append(mu)
+
+mu_d1 = np.mean(mu_pruebas_madera)
+mu_d2 = np.mean(mu_pruebas_papel)
+
+# Grafico de coeficiente de rozamiento dinamico para distintas superficies
 
 plt.figure()
 plt.bar(superficies, [mu_d1, mu_d2], color='b')
