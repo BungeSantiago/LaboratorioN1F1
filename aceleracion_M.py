@@ -72,6 +72,10 @@ def promedio_aceleracion(prueba):
         aceleraciones.append(a_opt)
         errores_aceleracion.append(error_a)
 
+    # Convertir la aceleración de cm/s² a m/s² ---> Ver si esta bien esto
+    aceleraciones = np.array(aceleraciones) / 100
+    errores_aceleracion = np.array(errores_aceleracion) / 100
+        
     return np.mean(aceleraciones), np.mean(errores_aceleracion)
 
 def mu_dinamico(m, M, a):
@@ -104,7 +108,7 @@ plt.errorbar(aceleraciones_madera.keys(),
              fmt='o', color='b', capsize=5)
 plt.title('Aceleración vs m con M = Masa dorada')
 plt.xlabel('Masa m (g)')
-plt.ylabel('Aceleración (cm/s^2)')
+plt.ylabel('Aceleración (m/s^2)')
 plt.grid(True)
 plt.show()
 
@@ -124,7 +128,7 @@ plt.errorbar(aceleraciones_papel.keys(),
                 fmt='o', color='b', capsize=5)
 plt.title('Aceleración vs m con M = 2 masas de plata')
 plt.xlabel('Masa m (g)')
-plt.ylabel('Aceleración (cm/s^2)')
+plt.ylabel('Aceleración (m/s^2)')
 plt.grid(True)
 plt.show()
 
