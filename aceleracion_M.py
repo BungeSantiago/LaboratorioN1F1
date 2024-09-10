@@ -2,11 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
-# Armar un diccionario con todos los pesos de todo
-
 def masas_dict(file_path:str) -> dict:
     '''
-    Pasa los datos del csv a un diccionario con la siguiente estructura:
+    Pasa los datos del csv de las masas con sus pesos a un diccionario con la siguiente estructura:
     dict = {'trineo': 110, 'dorada': 73, ...}
     '''
     data = {}
@@ -19,7 +17,7 @@ def masas_dict(file_path:str) -> dict:
 
 def csv_to_dict(file_path:str) -> dict:
     '''
-    Pasa los datos del csv a un diccionario con la siguiente estructura:
+    Pasa los datos del csv de una prueba a un diccionario con la siguiente estructura:
     dict = {'test 1': {'milisegundos': [], 'mediciones': []}, 'test 2': {'milisegundos': [], 'mediciones': []} ...
     '''
     data = {}
@@ -53,7 +51,7 @@ def correct_units(time:np.array, distance:np.array) -> tuple:
 
     return time, distance
 
-def promedio_aceleracion(prueba):
+def promedio_aceleracion(prueba:str) -> tuple:
     '''
     Calcula la aceleración de una prueba promediando los valores de los 3 tests.
     '''
@@ -78,7 +76,10 @@ def promedio_aceleracion(prueba):
         
     return np.mean(aceleraciones), np.mean(errores_aceleracion)
 
-def mu_dinamico(m, M, a):
+def mu_dinamico(m:float, M:float, a:float) -> float:
+    '''
+    Calcula el coeficiente de rozamiento dinámico.
+    '''
     g = 9.81
     return ((m + M) * a + M*g) / (m * g)
 
@@ -133,21 +134,23 @@ plt.grid(True)
 plt.show()
 
 # Coeficiente de Rozamiento Dinamico para distintas superficies
-g = 9.81
 mu_pruebas_madera = []
 mu_pruebas_papel = []
 superficies = ['Madera', 'Papel']
 
 for i in range(3):
-    mu = mu_dinamico(pesos_madera[i], pesos['dorada'], aceleraciones_madera[pesos_madera[i]][0])
-    mu_pruebas_madera.append(mu)
+    # Mu dinamico para madera
+    mu1 = mu_dinamico(pesos_madera[i], pesos['dorada'], aceleraciones_madera[pesos_madera[i]][0])
+    mu_pruebas_madera.append(mu1)
 
-for i in range(3):
+    # Mu dinamico para papel
     mu = mu_dinamico(pesos_papel[i], 2 * pesos['plateada'], aceleraciones_papel[pesos_papel[i]][0])
     mu_pruebas_papel.append(mu)
 
 mu_d1 = np.mean(mu_pruebas_madera)
 mu_d2 = np.mean(mu_pruebas_papel)
+
+# FALTA EL ERROR DE MU DINAMICO
 
 # Grafico de coeficiente de rozamiento dinamico para distintas superficies
 
