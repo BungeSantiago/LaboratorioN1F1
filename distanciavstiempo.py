@@ -81,3 +81,4 @@ plt.legend()
 plt.show()
 
 # Saco el promedio de las aceleraciones de cada test
+# Chequear lo de 2*acc
