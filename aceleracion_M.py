@@ -156,7 +156,6 @@ mu_d2 = np.mean(mu_pruebas_papel)
 
 plt.figure()
 plt.bar(superficies, [mu_d1, mu_d2], color='b')
-plt.title('Coeficiente de Rozamiento Dinamico para distintas superficies')
 plt.ylabel('Coeficiente de Rozamiento Dinamico')
 plt.xlabel('Superficie')
 plt.grid(True)
