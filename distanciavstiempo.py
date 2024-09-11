@@ -66,7 +66,7 @@ errores = np.sqrt(np.diag(pcov))
 print(f'Coeficientes ajustados: {popt}')
 print(f'Incertezas: {errores}')
 
-print(f"Aceleración a: {2*a_opt:.1f} ± {errores[0]:.1f} cm /s^2")
+print(f"Aceleración a: {a_opt:.1f} ± {errores[0]:.1f} cm /s^2")
 print(f"Velocidad inicial v_0: {v_0_opt:.0f} ± {errores[1]:.0f} cm /s")
 print(f"Posición inicial x_0: {x_0_opt:.0f} ± {errores[2]:.0f} cm")
 

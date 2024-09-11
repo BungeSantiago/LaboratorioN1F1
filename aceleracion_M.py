@@ -65,7 +65,7 @@ def promedio_aceleracion(prueba:str) -> tuple:
         tiempo, posicion = correct_units(tiempo, posicion)
         errores_y = np.full(len(posicion), 0.1)
         popt, pcov = curve_fit(modelo_cuadratico, tiempo, posicion, sigma=errores_y, absolute_sigma=True)
-        a_opt = 2*popt[0]
+        a_opt = popt[0]
         error_a = np.sqrt(pcov[0, 0])
         aceleraciones.append(a_opt)
         errores_aceleracion.append(error_a)
