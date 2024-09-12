@@ -57,7 +57,7 @@ tiempo, posicion, incerteza_posicion = correct_units(tiempo, posicion, pendiente
 errores_y = np.full(len(posicion), 0.1)
 
 # Definir la función cuadrática con v_0 = 0
-modelo_cuadratico = lambda t, a, v_0, x_0: a * t**2 + v_0 * t +  x_0 
+modelo_cuadratico = lambda t, a, v_0, x_0: 0.5 * a * t**2 + v_0 * t +  x_0 
 
 # Ajustar la curva
 popt, pcov = curve_fit(modelo_cuadratico, tiempo, posicion, sigma=errores_y, absolute_sigma=True)
@@ -69,8 +69,8 @@ errores = np.sqrt(np.diag(pcov))
 print(f'Coeficientes ajustados: {popt}')
 print(f'Incertezas: {errores}')
 
-print(f"Aceleración a: {a_opt:.1f} ± {errores[0]:.1f} cm /s^2")
-print(f"Velocidad inicial v_0: {v_0_opt:.0f} ± {errores[1]:.0f} cm /s")
+print(f"Aceleración a: {a_opt:.1f} ± {errores[0]:.1f} cm /s²")
+print(f"Velocidad inicial v_0: {v_0_opt:.0f} ± {errores[1]:.0f} cm/s")
 print(f"Posición inicial x_0: {x_0_opt:.0f} ± {errores[2]:.0f} cm")
 
 # Graficar los datos y el ajuste

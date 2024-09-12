@@ -56,7 +56,7 @@ def promedio_aceleracion(prueba:str) -> tuple:
     Calcula la aceleración de una prueba promediando los valores de los 3 tests.
     '''
     data = csv_to_dict(prueba)
-    modelo_cuadratico = lambda t, a, v_0, x_0: a * t**2 + v_0 * t +  x_0
+    modelo_cuadratico = lambda t, a, v_0, x_0: 0.5 * a * t**2 + v_0 * t +  x_0
     aceleraciones = []
     errores_aceleracion = []
 
@@ -81,7 +81,7 @@ def mu_dinamico(m:float, M:float, a:float) -> float:
     Calcula el coeficiente de rozamiento dinámico.
     '''
     g = 9.81
-    return (- (m + M) * a + M*g) / (m * g)
+    return ((m + M) * a + M*g) / (m * g)
 
 pesos = masas_dict('dataset/datos.txt')
 
@@ -108,8 +108,8 @@ plt.errorbar(aceleraciones_madera.keys(),
              yerr=[aceleraciones_madera[key][1] for key in aceleraciones_madera], 
              fmt='o', color='b', capsize=5)
 plt.title('Aceleración vs m con M = Masa dorada')
-plt.xlabel('Masa m (g)')
-plt.ylabel('Aceleración (m/s^2)')
+plt.xlabel('Masa m [g]')
+plt.ylabel('Aceleración [m/s²]')
 plt.grid(True)
 plt.show()
 
@@ -128,8 +128,8 @@ plt.errorbar(aceleraciones_papel.keys(),
                 yerr=[aceleraciones_papel[key][1] for key in aceleraciones_papel],
                 fmt='o', color='b', capsize=5)
 plt.title('Aceleración vs m con M = 2 masas de plata')
-plt.xlabel('Masa m (g)')
-plt.ylabel('Aceleración (m/s^2)')
+plt.xlabel('Masa m [g]')
+plt.ylabel('Aceleración [m/s²]')
 plt.grid(True)
 plt.show()
 
