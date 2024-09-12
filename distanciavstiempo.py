@@ -82,3 +82,5 @@ plt.xlabel('Tiempo [s]')
 plt.ylabel('Posición [cm]')
 plt.legend()
 plt.show()
+
+# VER ACELERACION
