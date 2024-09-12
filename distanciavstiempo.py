@@ -34,24 +34,27 @@ def csv_to_dict(file_path:str) -> dict:
 
     return data
 
-def correct_units(time:np.array, distance:np.array) -> tuple:
+def correct_units(time:np.array, distance:np.array, pendiente:float, incerteza_pendiente:float, ordenada:float, incerteza_ordenada:float) -> tuple:
     '''
-    Convierte las unidades de tiempo a segundos y la distancia a centímetros.
+    Convierte las unidades de tiempo (milisegundos) a segundos y la distancia a centímetros.
     '''
-    a = 0.01736595797123086
-    b = -0.6682770640993427
-    
     time = time / 1000
-    distance = a * distance + b
+    distance_cm = pendiente * distance + ordenada
+    incerteza_distance_cm = np.sqrt((distance * incerteza_pendiente)**2 + incerteza_ordenada**2)
+    return time, distance_cm, incerteza_distance_cm
 
-    return time, distance
+# Datos del ajuste lineal anterior
+pendiente = 0.01736595797123086
+incerteza_pendiente = 0.0006720241499391473
+ordenada = -0.6682770640993427
+incerteza_ordenada = 0.6843903118668289
 
 data = csv_to_dict('dataset/prueba4.csv')
 tiempo, posicion = data['test 1']['milisegundos'], data['test 1']['mediciones']
-tiempo, posicion = correct_units(tiempo, posicion)
+tiempo, posicion, incerteza_posicion = correct_units(tiempo, posicion, pendiente, incerteza_pendiente, ordenada, incerteza_ordenada)
 
 # Datos de ejemplo (tiempo, posición y errores en y)
-errores_y = np.full(len(posicion), 0.1) # O tengo que usar las incertezas de la pendiente?
+errores_y = np.full(len(posicion), 0.1)
 
 # Definir la función cuadrática con v_0 = 0
 modelo_cuadratico = lambda t, a, v_0, x_0: a * t**2 + v_0 * t +  x_0 
@@ -72,13 +75,10 @@ print(f"Posición inicial x_0: {x_0_opt:.0f} ± {errores[2]:.0f} cm")
 
 # Graficar los datos y el ajuste
 t_ajuste = np.linspace(min(tiempo), max(tiempo), 100)
-plt.errorbar(tiempo, posicion, yerr=errores_y, fmt='o', label='Datos')
+plt.errorbar(tiempo, posicion, yerr=incerteza_posicion, fmt='o', label='Datos con incertezas')
 
 plt.plot(t_ajuste, modelo_cuadratico(t_ajuste, *popt), 'r', label=f'Ajuste cuadrático')
 plt.xlabel('Tiempo [s]')
 plt.ylabel('Posición [cm]')
 plt.legend()
 plt.show()
-
-# Saco el promedio de las aceleraciones de cada test
-# Chequear lo de 2*acc
