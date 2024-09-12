@@ -69,11 +69,10 @@ def promedio_aceleracion(prueba:str) -> tuple:
         error_a = np.sqrt(pcov[0, 0])
         aceleraciones.append(a_opt)
         errores_aceleracion.append(error_a)
-
-    # Convertir la aceleración de cm/s² a m/s² ---> Ver si esta bien esto
-    aceleraciones = np.array(aceleraciones) / 100
-    errores_aceleracion = np.array(errores_aceleracion) / 100
         
+    aceleraciones = np.array(aceleraciones)
+    errores_aceleracion = np.array(errores_aceleracion)
+
     return np.mean(aceleraciones), np.mean(errores_aceleracion)
 
 def mu_dinamico(m:float, M:float, a:float) -> float:
@@ -81,6 +80,8 @@ def mu_dinamico(m:float, M:float, a:float) -> float:
     Calcula el coeficiente de rozamiento dinámico.
     '''
     g = 9.81
+    # Pasamos la aceleracion de cm/s² a m/s²
+    a = a / 100
     return ((m + M) * a + M*g) / (m * g)
 
 pesos = masas_dict('dataset/datos.txt')
@@ -109,7 +110,7 @@ plt.errorbar(aceleraciones_madera.keys(),
              fmt='o', color='b', capsize=5)
 plt.title('Aceleración vs m con M = Masa dorada')
 plt.xlabel('Masa m [g]')
-plt.ylabel('Aceleración [m/s²]')
+plt.ylabel('Aceleración [cm/s²]')
 plt.grid(True)
 plt.show()
 
@@ -129,7 +130,7 @@ plt.errorbar(aceleraciones_papel.keys(),
                 fmt='o', color='b', capsize=5)
 plt.title('Aceleración vs m con M = 2 masas de plata')
 plt.xlabel('Masa m [g]')
-plt.ylabel('Aceleración [m/s²]')
+plt.ylabel('Aceleración [cm/s²]')
 plt.grid(True)
 plt.show()
 
@@ -153,7 +154,6 @@ mu_d2 = np.mean(mu_pruebas_papel)
 # FALTA EL ERROR DE MU DINAMICO
 
 # Grafico de coeficiente de rozamiento dinamico para distintas superficies
-
 plt.figure()
 plt.bar(superficies, [mu_d1, mu_d2], color='b')
 plt.ylabel('Coeficiente de Rozamiento Dinamico')
