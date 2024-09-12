@@ -81,7 +81,7 @@ def mu_dinamico(m:float, M:float, a:float) -> float:
     Calcula el coeficiente de rozamiento dinámico.
     '''
     g = 9.81
-    return ((m + M) * a + M*g) / (m * g)
+    return (- (m + M) * a + M*g) / (m * g)
 
 pesos = masas_dict('dataset/datos.txt')
 
