@@ -154,10 +154,47 @@ mu_d1 = np.mean(mu_pruebas_madera)
 mu_d2 = np.mean(mu_pruebas_papel)
 
 # FALTA EL ERROR DE MU DINAMICO
+def error_mu_dinamico(m: float, M: float, a: float, error_a: float) -> float:
+    '''
+    Calcula el error en el coeficiente de rozamiento dinámico.
+    '''
+    g = 9.81
+    
+    # Derivada parcial de mu_d respecto a a:
+    dmu_da = (m + M) / (m * g)
+    
+    # Propagación de errores:
+    error_mu_d = dmu_da * error_a
+    
+    return error_mu_d
+
+# Calculo de errores para mu dinámico
+errores_mu_madera = []
+errores_mu_papel = []
+
+for i in range(3):
+    # Error de mu dinamico para madera
+    error_mu1 = error_mu_dinamico(pesos_madera[i], pesos['dorada'], 
+                                  aceleraciones_madera[pesos_madera[i]][0], 
+                                  aceleraciones_madera[pesos_madera[i]][1])
+    errores_mu_madera.append(error_mu1)
+    
+    # Error de mu dinamico para papel
+    error_mu2 = error_mu_dinamico(pesos_papel[i], 2 * pesos['plateada'], 
+                                  aceleraciones_papel[pesos_papel[i]][0], 
+                                  aceleraciones_papel[pesos_papel[i]][1])
+    errores_mu_papel.append(error_mu2)
+
+error_mu_d_madera_mean = np.mean(errores_mu_madera)
+error_mu_d_papel_mean = np.mean(errores_mu_papel)
 
 # Grafico de coeficiente de rozamiento dinamico para distintas superficies
 plt.figure()
 plt.bar(superficies, [mu_d1, mu_d2], color='b')
+plt.errorbar(superficies, 
+             [mu_d1, mu_d2], 
+             yerr=[error_mu_d_madera_mean, error_mu_d_papel_mean], 
+             fmt='o', color='r', capsize=5)
 plt.ylabel('Coeficiente de Rozamiento Dinamico')
 plt.xlabel('Superficie')
 plt.grid(True)
