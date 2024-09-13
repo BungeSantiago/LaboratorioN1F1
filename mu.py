@@ -109,6 +109,7 @@ plt.errorbar(aceleraciones_madera.keys(),
              yerr=[aceleraciones_madera[key][1] for key in aceleraciones_madera], 
              fmt='o', color='b', capsize=5)
 plt.title('Aceleración vs m con M = Masa dorada')
+# SACAR EL TITULO
 plt.xlabel('Masa m [g]')
 plt.ylabel('Aceleración [cm/s²]')
 plt.grid(True)
@@ -129,6 +130,7 @@ plt.errorbar(aceleraciones_papel.keys(),
                 yerr=[aceleraciones_papel[key][1] for key in aceleraciones_papel],
                 fmt='o', color='b', capsize=5)
 plt.title('Aceleración vs m con M = 2 masas de plata')
+# SACAR EL TITULO
 plt.xlabel('Masa m [g]')
 plt.ylabel('Aceleración [cm/s²]')
 plt.grid(True)
