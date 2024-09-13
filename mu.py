@@ -153,6 +153,9 @@ for i in range(3):
 mu_d1 = np.mean(mu_pruebas_madera)
 mu_d2 = np.mean(mu_pruebas_papel)
 
+print(f'Coeficiente de Rozamiento Dinamico para madera: {mu_d1}')
+print(f'Coeficiente de Rozamiento Dinamico para papel: {mu_d2}')
+
 # FALTA EL ERROR DE MU DINAMICO
 def error_mu_dinamico(m: float, M: float, a: float, error_a: float) -> float:
     '''
