@@ -49,38 +49,41 @@ incerteza_pendiente = 0.0006720241499391473
 ordenada = -0.6682770640993427
 incerteza_ordenada = 0.6843903118668289
 
-data = csv_to_dict('dataset/prueba4.csv')
-tiempo, posicion = data['test 1']['milisegundos'], data['test 1']['mediciones']
-tiempo, posicion, incerteza_posicion = correct_units(tiempo, posicion, pendiente, incerteza_pendiente, ordenada, incerteza_ordenada)
-
-# Datos de ejemplo (tiempo, posición y errores en y)
-errores_y = np.full(len(posicion), 0.1)
-
+pruebas = ['dataset/prueba4.csv', 'dataset/prueba5.csv']
+fig, ax = plt.subplots(1, 2, figsize=(12, 6))
 # Definir la función cuadrática con v_0 = 0
 modelo_cuadratico = lambda t, a, v_0, x_0: 0.5 * a * t**2 + v_0 * t +  x_0 
 
-# Ajustar la curva
-popt, pcov = curve_fit(modelo_cuadratico, tiempo, posicion, sigma=errores_y, absolute_sigma=True)
 
-# Obtener los coeficientes ajustados y sus errores
-a_opt, v_0_opt, x_0_opt = popt
-errores = np.sqrt(np.diag(pcov))
+for i, prueba in enumerate(pruebas):
+    data = csv_to_dict(prueba)
+    tiempo, posicion = data['test 1']['milisegundos'], data['test 1']['mediciones']
+    tiempo, posicion, incerteza_posicion = correct_units(tiempo, posicion, pendiente, incerteza_pendiente, ordenada, incerteza_ordenada)
 
-print(f'Coeficientes ajustados: {popt}')
-print(f'Incertezas: {errores}')
+    # Datos de ejemplo (tiempo, posición y errores en y)
+    errores_y = np.full(len(posicion), 0.1)
 
-print(f"Aceleración a: {a_opt:.1f} ± {errores[0]:.1f} cm /s²")
-print(f"Velocidad inicial v_0: {v_0_opt:.0f} ± {errores[1]:.0f} cm/s")
-print(f"Posición inicial x_0: {x_0_opt:.0f} ± {errores[2]:.0f} cm")
+    # Ajustar la curva
+    popt, pcov = curve_fit(modelo_cuadratico, tiempo, posicion, sigma=errores_y, absolute_sigma=True)
 
-# Graficar los datos y el ajuste
-t_ajuste = np.linspace(min(tiempo), max(tiempo), 100)
-plt.errorbar(tiempo, posicion, yerr=incerteza_posicion, fmt='o', label='Datos con incertezas')
+    # Obtener los coeficientes ajustados y sus errores
+    a_opt, v_0_opt, x_0_opt = popt
+    errores = np.sqrt(np.diag(pcov))
 
-plt.plot(t_ajuste, modelo_cuadratico(t_ajuste, *popt), 'r', label=f'Ajuste cuadrático')
-plt.xlabel('Tiempo [s]')
-plt.ylabel('Posición [cm]')
-plt.legend()
+    print(f'PRUEBA {prueba[14]}')
+    print(f'Coeficientes ajustados: {popt}')
+    print(f'Incertezas: {errores}')
+
+    print(f"Aceleración a: {a_opt:.1f} ± {errores[0]:.1f} cm /s²")
+    print(f"Velocidad inicial v_0: {v_0_opt:.0f} ± {errores[1]:.0f} cm/s")
+    print(f"Posición inicial x_0: {x_0_opt:.0f} ± {errores[2]:.0f} cm")
+
+    # Graficar los datos y el ajuste
+    t_ajuste = np.linspace(min(tiempo), max(tiempo), 100)
+    ax[i].errorbar(tiempo, posicion, yerr=incerteza_posicion, fmt='o', label='Datos con incertezas')
+    ax[i].plot(t_ajuste, modelo_cuadratico(t_ajuste, *popt), 'r', label=f'Ajuste cuadrático')
+    ax[i].set_xlabel('Tiempo [s]')
+    ax[i].set_ylabel('Posición [cm]')
+    ax[i].legend()
+
 plt.show()
-
-# VER ACELERACION
